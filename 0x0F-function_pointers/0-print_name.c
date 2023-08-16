@@ -1,7 +1,10 @@
 #include <stdio.h>
 
 /**
- * main - entry point of the program
+ * print_name - function that prints an name
+ *
+ * @name: name of the person
+ * @f: variable that stores an address
  *
  * description - A function that prints a name
  *
