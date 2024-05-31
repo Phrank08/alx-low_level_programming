@@ -1,0 +1,75 @@
+#include "hash_tables.h"
+
+/**
+ * key_val - set key value on node
+ * @node: pointer to node
+ * @key: the key
+ * @value: the value
+ *
+ * Return: pointer to node
+ */
+hash_node_t *key_val(hash_node_t *node, const char *key, const char *value)
+{
+	hash_node_t *tmp, *tmp_tmp;
+
+	if (node == NULL)
+	{
+		node = malloc(sizeof(hash_node_t));
+		if (node == NULL)
+			return (NULL);
+
+		node->key = strdup(key);
+		node->value = strdup(value);
+		node->next = NULL;
+	}
+	else
+	{
+		tmp_tmp = node;
+		while (tmp_tmp != NULL)
+		{
+			if (strcmp(key, tmp_tmp->key) == 0)
+			{
+				free(tmp_tmp->value);
+				tmp_tmp->value = strdup(value);
+				return (node);
+			}
+			tmp_tmp = tmp_tmp->next;
+		}
+		tmp = malloc(sizeof(hash_node_t));
+		if (tmp == NULL)
+			return (NULL);
+		tmp->key = strdup(key);
+		tmp->value = strdup(value);
+		tmp->next = node;
+		node = tmp;
+	}
+	return (node);
+}
+
+/**
+ * hash_table_set - adds an element to the hash table
+ * @ht: hash table
+ * @key: the key.
+ * @value: value associated with key.
+ *
+ * Return: 1 if succeeded, 0 otherwise.
+ */
+int hash_table_set(hash_table_t *ht, const char *key, const char *value)
+{
+	hash_node_t *node;
+	const unsigned char *key_u;
+	unsigned long int index;
+
+	if (ht == NULL)
+		return (0);
+
+	key_u = (const unsigned char *) key;
+
+	index = hash_djb2(key_u) % ht->size;
+	node = key_val(ht->array[index], key, value);
+	if (node == NULL)
+		return (0);
+
+	ht->array[index] = node;
+	return (1);
+}
